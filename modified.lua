@@ -148,7 +148,6 @@ local function checklisting(uid, gems, item, version, shiny, amount, username, p
         local ping = true
             processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, ping)
         end
-    end
     elseif type.titanic and gems <= 10000000 then
         local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
         if boughtPet == true then
