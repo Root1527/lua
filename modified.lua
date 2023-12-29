@@ -1,7 +1,7 @@
 local osclock = os.clock()
 repeat task.wait() until game:IsLoaded()
 
-setfpscap(10)
+setfpscap(15)
 game:GetService("RunService"):Set3dRenderingEnabled(false)
 local Booths_Broadcast = game:GetService("ReplicatedStorage").Network:WaitForChild("Booths_Broadcast")
 local Players = game:GetService('Players')
@@ -119,8 +119,25 @@ local function checklisting(uid, gems, item, version, shiny, amount, username, p
     elseif item == "Titanic Christmas Present" and gems / amount <= 25000 then
         local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
 	processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, ping)
+    elseif item == "X-Large Christmas Present" and gems <= 80000 then
+        local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
+	processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, ping)
+    elseif item == "TNT Crate" and gems <= 9000 then
+        local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
+	processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, ping)
+    elseif item == "Spinny Wheel Ticket" and gems <= 17000 then
+        local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
+	processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, ping)
+    elseif string.find(item, "keys") and gems <= 5000 then
+	local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
+	processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, ping)
     elseif string.find(item, "Exclusive") and gems / amount <= 25000 then
         local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
+    elseif gems <= 20 then
+        local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
+        if boughtPet == true then
+        local ping = true
+	end
 	processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, ping)
     elseif type.huge and gems / amount <= 1000000 then
         local boughtPet, boughtMessage = purchase:InvokeServer(playerid, uid)
