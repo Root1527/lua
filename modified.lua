@@ -36,6 +36,103 @@ Players.LocalPlayer.Idled:connect(function()
    vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 end)
 
+local function processListingInfo(uid, gems, item, version, shiny, amount, boughtFrom, boughtStatus, class, failMessage, snipeNormal)
+    local gemamount = Players.LocalPlayer.leaderstats["💎 Diamonds"].Value
+    local snipeMessage ="||".. Players.LocalPlayer.Name .. "||"
+    local weburl, webContent, webcolor
+    local versionVal = { [1] = "Golden ", [2] = "Rainbow " }
+    local versionStr = versionVal[version] or (version == nil and "")
+    local mention = (type.huge or type.titanic) and "<@" .. userid .. ">" or ""
+	
+    if boughtStatus then
+	webcolor = tonumber(0x00ff00)
+        snipeMessage = snipeMessage .. " just sniped ".. amount .."x "
+        webContent = mention
+	if snipeNormal == true then
+	    weburl = normalwebhook
+	    snipeNormal = false
+	else
+	    weburl = webhook
+	end
+    else
+	webcolor = tonumber(0xff0000)
+	weburl = webhookFail
+	webContent = failMessage
+	snipeMessage = snipeMessage .. " failed to snipe ".. amount .."x "
+	if snipeNormal == true then
+	    snipeNormal = false
+	end
+    end
+	
+    snipeMessage = snipeMessage .. "**" .. versionStr
+    
+    if shiny then
+        snipeMessage = snipeMessage .. " Shiny "
+    end
+    
+    snipeMessage = snipeMessage .. item .. "**"
+    
+    local message1 = {
+        ['content'] = webContent,
+        ['embeds'] = {
+            {
+		["author"] = {
+			["name"] = "Boor Sniper 🌚",
+			["icon_url"] = "https://cdn.discordapp.com/attachments/1149218291957637132/1190527382583525416/new-moon-face_1f31a.png?ex=65a22006&is=658fab06&hm=55f8900eef039709c8e57c96702f8fb7df520333ec6510a81c31fc746193fbf2&",
+		},
+                ['title'] = snipeMessage,
+                ["color"] = webcolor,
+                ["timestamp"] = DateTime.now():ToIsoDate(),
+                ['fields'] = {
+                    {
+                        ['name'] = "__Price:__",
+                        ['value'] = gems .. " 💎",
+                    },
+                    {
+                        ['name'] = "__Bought from:__",
+                        ['value'] = "||"..tostring(boughtFrom).."||",
+                    },
+                    {
+                        ['name'] = "__Amount:__",
+                        ['value'] = amount .. "x",
+                    },
+                    {
+                        ['name'] = "__Remaining gems:__",
+                        ['value'] = gemamount .. " 💎",
+                    },      
+                    {
+                        ['name'] = "__PetID:__",
+                        ['value'] = "||"..tostring(uid).."||",
+                    },
+		    {
+                        ['name'] = "__Ping:__",
+                        ['value'] = math.round(Players.LocalPlayer:GetNetworkPing() * 2000) .. "ms",
+                    },
+                },
+		["footer"] = {
+                        ["icon_url"] = "https://cdn.discordapp.com/attachments/1149218291957637132/1190527382583525416/new-moon-face_1f31a.png?ex=65a22006&is=658fab06&hm=55f8900eef039709c8e57c96702f8fb7df520333ec6510a81c31fc746193fbf2&", -- optional
+                        ["text"] = "Heavily Modified by Root"
+		}
+            },
+        }
+    }
+
+    local jsonMessage = http:JSONEncode(message1)
+    local success, webMessage = pcall(function()
+	http:PostAsync(weburl, jsonMessage)
+    end)
+    if success == false then
+        local response = request({
+            Url = weburl,
+            Method = "POST",
+            Headers = {
+                ["Content-Type"] = "application/json"
+            },
+            Body = jsonMessage
+        })
+    end
+end
+
 local function tryPurchase(uid, gems, item, version, shiny, amount, username, class, playerid, buytimestamp, listTimestamp, snipeNormal)
     if buytimestamp > listTimestamp then
 	task.wait(buytimestamp - workspace:GetServerTimeNow() - Players.LocalPlayer:GetNetworkPing())
@@ -134,103 +231,6 @@ Booths_Broadcast.OnClientEvent:Connect(function(username, message)
             end
         end
     end)
-
-local function processListingInfo(uid, gems, item, version, shiny, amount, boughtFrom, boughtStatus, class, failMessage, snipeNormal)
-    local gemamount = Players.LocalPlayer.leaderstats["💎 Diamonds"].Value
-    local snipeMessage ="||".. Players.LocalPlayer.Name .. "||"
-    local weburl, webContent, webcolor
-    local versionVal = { [1] = "Golden ", [2] = "Rainbow " }
-    local versionStr = versionVal[version] or (version == nil and "")
-    local mention = (type.huge or type.titanic) and "<@" .. userid .. ">" or ""
-	
-    if boughtStatus then
-	webcolor = tonumber(0x00ff00)
-        snipeMessage = snipeMessage .. " just sniped ".. amount .."x "
-        webContent = mention
-	if snipeNormal == true then
-	    weburl = normalwebhook
-	    snipeNormal = false
-	else
-	    weburl = webhook
-	end
-    else
-	webcolor = tonumber(0xff0000)
-	weburl = webhookFail
-	webContent = failMessage
-	snipeMessage = snipeMessage .. " failed to snipe ".. amount .."x "
-	if snipeNormal == true then
-	    snipeNormal = false
-	end
-    end
-	
-    snipeMessage = snipeMessage .. "**" .. versionStr
-    
-    if shiny then
-        snipeMessage = snipeMessage .. " Shiny "
-    end
-    
-    snipeMessage = snipeMessage .. item .. "**"
-    
-    local message1 = {
-        ['content'] = webContent,
-        ['embeds'] = {
-            {
-		["author"] = {
-			["name"] = "Boor Sniper 🌚",
-			["icon_url"] = "https://cdn.discordapp.com/attachments/1149218291957637132/1190527382583525416/new-moon-face_1f31a.png?ex=65a22006&is=658fab06&hm=55f8900eef039709c8e57c96702f8fb7df520333ec6510a81c31fc746193fbf2&",
-		},
-                ['title'] = snipeMessage,
-                ["color"] = webcolor,
-                ["timestamp"] = DateTime.now():ToIsoDate(),
-                ['fields'] = {
-                    {
-                        ['name'] = "__Price:__",
-                        ['value'] = gems .. " 💎",
-                    },
-                    {
-                        ['name'] = "__Bought from:__",
-                        ['value'] = "||"..tostring(boughtFrom).."||",
-                    },
-                    {
-                        ['name'] = "__Amount:__",
-                        ['value'] = amount .. "x",
-                    },
-                    {
-                        ['name'] = "__Remaining gems:__",
-                        ['value'] = gemamount .. " 💎",
-                    },      
-                    {
-                        ['name'] = "__PetID:__",
-                        ['value'] = "||"..tostring(uid).."||",
-                    },
-		    {
-                        ['name'] = "__Ping:__",
-                        ['value'] = math.round(Players.LocalPlayer:GetNetworkPing() * 2000) .. "ms",
-                    },
-                },
-		["footer"] = {
-                        ["icon_url"] = "https://cdn.discordapp.com/attachments/1149218291957637132/1190527382583525416/new-moon-face_1f31a.png?ex=65a22006&is=658fab06&hm=55f8900eef039709c8e57c96702f8fb7df520333ec6510a81c31fc746193fbf2&", -- optional
-                        ["text"] = "Heavily Modified by Root"
-		}
-            },
-        }
-    }
-
-    local jsonMessage = http:JSONEncode(message1)
-    local success, webMessage = pcall(function()
-	http:PostAsync(weburl, jsonMessage)
-    end)
-    if success == false then
-        local response = request({
-            Url = weburl,
-            Method = "POST",
-            Headers = {
-                ["Content-Type"] = "application/json"
-            },
-            Body = jsonMessage
-        })
-    end
-end
 
 local function jumpToServer() 
     local sfUrl = "https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=%s&limit=%s&excludeFullGames=true" 
