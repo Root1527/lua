@@ -106,7 +106,7 @@ local function processListingInfo(uid, gems, item, version, shiny, amount, bough
                     },
 		    {
                         ['name'] = "__Status:__",
-                        ['value'] = "||"..webStatus.."||",
+                        ['value'] = webStatus,
                     },
 		    {
                         ['name'] = "__Ping:__",
