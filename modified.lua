@@ -140,9 +140,10 @@ end
 local function tryPurchase(uid, gems, item, version, shiny, amount, username, class, playerid, buytimestamp, listTimestamp, snipeNormal)
     signal = game:GetService("RunService").Heartbeat:Connect(function()
 	if buytimestamp < workspace:GetServerTimeNow() - Players.LocalPlayer:GetNetworkPing() then
-	    signal:Disconnect()
 	    local boughtPet, boughtMessage = rs.Network.Booths_RequestPurchase:InvokeServer(playerid, uid)
             processListingInfo(uid, gems, item, version, shiny, amount, username, boughtPet, class, boughtMessage, snipeNormal)
+	    signal:Disconnect()
+	    signal = nil
         end
     end)
 end
