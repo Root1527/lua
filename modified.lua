@@ -139,7 +139,7 @@ end
 
 local function tryPurchase(uid, gems, item, version, shiny, amount, username, class, playerid, buytimestamp, listTimestamp, snipeNormal)
     signal = game:GetService("RunService").Heartbeat:Connect(function()
-	if buytimestamp < workspace:GetServerTimeNow() - Players.LocalPlayer:GetNetworkPing() then
+	if buytimestamp < workspace:GetServerTimeNow() then
 	    signal:Disconnect()
 	    signal = nil
         end
