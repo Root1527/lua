@@ -4,7 +4,8 @@ ethereum: creating the base sniper
 chocolog: providing type.huge
 Edmond: offered tips for optimization
 
-it is very recommended to fork this and made your own config
+Hello from root, I won't be updating this as I have been very demotivated to update this script
+it's required to fork this for now. cya
 ]]--
 
 local osclock = os.clock()
