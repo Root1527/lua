@@ -1,15 +1,18 @@
-local Players = game:GetService('Players')
-local PlayerInServer = #Players:GetPlayers()
-local ostime = os.time()
+repeat wait() until game:IsLoaded()
+
+local Players = game:GetService("Players")
+local getPlayers = Players:GetPlayers()
+local PlayerInServer = #getPlayers
+local alts = {"IScarePS99Players","IScarePS99Players1","IScarePS99Players2","IScarePS99Players3","IScarePS99Players4","IScarePS99Players5"}
 
 local function jumpToServer() 
 local sfUrl = "https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=%s&limit=%s&excludeFullGames=true" 
-local req = request({ Url = string.format(sfUrl, 15502339080, "Desc", 100) }) 
+local req = request({ Url = string.format(sfUrl, 8737899170, "Desc", 100) }) 
 local body = game:GetService("HttpService"):JSONDecode(req.Body) 
-local deep = math.random(1, 3)
+local deep = math.random(1, 6)
 if deep > 1 then 
     for i = 1, deep, 1 do 
-        req = request({ Url = string.format(sfUrl .. "&cursor=" .. body.nextPageCursor, 15502339080, "Desc", 100) }) 
+        req = request({ Url = string.format(sfUrl .. "&cursor=" .. body.nextPageCursor, 8737899170, "Desc", 100) }) 
         body = game:GetService("HttpService"):JSONDecode(req.Body) 
         task.wait(0.1)
     end 
@@ -26,12 +29,26 @@ if body and body.data then
     if not randomCount then
         randomCount = 2
     end
-    game:GetService("TeleportService"):TeleportToPlaceInstance(15502339080, servers[math.random(1, randomCount)], game:GetService("Players").LocalPlayer) 
+    game:GetService("TeleportService"):TeleportToPlaceInstance(8737899170, servers[math.random(1, randomCount)], game:GetService("Players").LocalPlayer) 
 end
 
-while wait(0.1) do
-    PlayerInServer = #Players:GetPlayers()
-    if PlayerInServer <= 20 or os.time() >= ostime + 900 then
-        jumpToServer()
+for i = 1, PlayerInServer do
+   for ii = 1,#alts do
+        if getPlayers[i].Name == alts[ii] and alts[ii] ~= Players.LocalPlayer.Name then
+            while task.wait(10) do
+		        jumpToServer()
+	        end
+        end
     end
 end
+
+Players.PlayerAdded:Connect(function(player)
+    for i = 1,#alts do
+        if player.Name == alts[i] and alts[i] ~= Players.LocalPlayer.Name then
+	        task.wait(math.random(0, 60))
+                while task.wait(10) do
+	                jumpToServer()
+	            end
+        end
+    end
+end)
